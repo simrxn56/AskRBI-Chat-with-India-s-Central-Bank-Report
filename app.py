@@ -28,23 +28,33 @@ with col2:
     st.code("How did the rupee perform in 2024?")
     st.code("What are the key risks to the economy?")
 
+# Initialize session state
+if "question" not in st.session_state:
+    st.session_state.question = ""
+
+def clear_input():
+    st.session_state.question = ""
+
 # Input
-question = st.text_input("Your question:", placeholder="Type your question here...")
+question = st.text_input("Your question:", 
+    placeholder="Type your question here...",
+    key="question")
 
 if question:
     with st.spinner("Searching the report..."):
         answer = chain.invoke(question)
         sources = retriever.invoke(question)
 
-    # Answer
     st.markdown("### Answer")
     st.write(answer)
 
-    # Source chunks — this is the trust factor
     with st.expander("📄 Source passages from the report"):
         for i, doc in enumerate(sources):
             st.markdown(f"**Passage {i+1}:**")
             st.caption(doc.page_content)
             st.divider()
+    
+    # Clear input after showing answer
+    st.button("Ask another question", on_click=clear_input)
 
 
