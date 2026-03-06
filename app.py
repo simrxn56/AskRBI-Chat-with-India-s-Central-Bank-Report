@@ -14,7 +14,7 @@ st.caption("Ask any quesion about the RBI Annual Report 2024-25")
 def get_chain():
     return build_chain()
 
-chain = get_chain()
+chain, retriever = get_chain()
 
 # Example questions to guide others
 st.markdown("**Try asking:**")
@@ -31,15 +31,16 @@ question = st.text_input("Your question:", placeholder="Type your question here.
 
 if question:
     with st.spinner("Searching the report..."):
-        result = chain({"query": question})
-    
+        answer = chain.invoke(question)
+        sources = retriever.invoke(question)
+
     # Answer
     st.markdown("### Answer")
-    st.write(result["result"])
+    st.write(answer)
 
     # Source chunks — this is the trust factor
     with st.expander("📄 Source passages from the report"):
-        for i, doc in enumerate(result["source_documents"]):
+        for i, doc in enumerate(sources):
             st.markdown(f"**Passage {i+1}:**")
             st.caption(doc.page_content)
             st.divider()
