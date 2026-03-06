@@ -1,13 +1,12 @@
 from langchain_groq import ChatGroq
-from langchain_classic.chains import RetrievalQA
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 from langchain_classic.prompts import PromptTemplate
 from retriever import load_retriever
 import os
 import warnings
-
 warnings.filterwarnings('ignore')
 from dotenv import load_dotenv
-
 load_dotenv()
 
 PROMPT_TEMPLATE = """
@@ -39,12 +38,13 @@ def build_chain():
 
     retriever = load_retriever()
 
-    chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        retriever=retriever,
-        chain_type="stuff",
-        chain_type_kwargs={"prompt":prompt},
-        return_source_documents=True
-    )
+    def format_docs(docs):
+        return "\n\n".join(doc.page_content for doc in docs)
 
-    return chain
+    chain = chain = (
+        {"context": retriever | format_docs, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+    return chain, retriever
