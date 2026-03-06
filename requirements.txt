@@ -1,7 +1,8 @@
-langchain-text_splitter
+langchain
+langchain-core
 langchain-community
 langchain-groq
-langchain-classic
+langchain-text-splitters
 sentence-transformers
 faiss-cpu
 pymupdf
