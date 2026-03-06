@@ -14,7 +14,9 @@ st.caption("Ask any quesion about the RBI Annual Report 2024-25")
 def get_chain():
     return build_chain()
 
-chain, retriever = get_chain()
+result = get_chain()
+chain = result[0]
+retriever = result[1]
 
 # Example questions to guide others
 st.markdown("**Try asking:**")
@@ -44,3 +46,4 @@ if question:
             st.markdown(f"**Passage {i+1}:**")
             st.caption(doc.page_content)
             st.divider()
+
