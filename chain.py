@@ -47,5 +47,6 @@ def build_chain():
         | llm
         | StrOutputParser()
     )
-    return chain, retriever
+    return (chain, retriever)
+
 
