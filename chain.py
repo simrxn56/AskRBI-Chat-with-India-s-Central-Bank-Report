@@ -41,10 +41,11 @@ def build_chain():
     def format_docs(docs):
         return "\n\n".join(doc.page_content for doc in docs)
 
-    chain = chain = (
+    chain = (
         {"context": retriever | format_docs, "question": RunnablePassthrough()}
         | prompt
         | llm
         | StrOutputParser()
     )
     return chain, retriever
+
